@@ -108,21 +108,22 @@ public class JwtUtil {
     }
 
     private JwtClaims extractAllClaims(String token) {
+        return getJwtContext(createJwtConsumer(), token).getJwtClaims();
+    }
 
-        JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+    private JwtConsumer createJwtConsumer() {
+        return new JwtConsumerBuilder()
                 .setRequireIssuedAt()
                 .setRequireExpirationTime()
                 .setVerificationKey(publicKey)
                 .build();
+    }
 
-        JwtContext jwtContext;
-
+    private JwtContext getJwtContext(JwtConsumer jwtConsumer, String token) {
         try{
-            jwtContext = jwtConsumer.process(token);
+            return jwtConsumer.process(token);
         } catch (InvalidJwtException e) {
             throw new RuntimeException("Was not Able to process jwt token: %s", e);
         }
-
-        return jwtContext.getJwtClaims();
     }
 }
