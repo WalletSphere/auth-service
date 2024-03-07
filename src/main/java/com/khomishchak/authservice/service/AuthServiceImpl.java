@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             return restTemplate.postForObject(url, request, responseType);
         } catch (HttpClientErrorException clientErrorException) {
-            handleErrorResponse(clientErrorException);
+            handleFailedAuthErrorResponse(clientErrorException);
             return null;
         }
     }
@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
         return new ProcessedTokenResp(jwtUtil.extractUserId(token), jwtUtil.isTokenExpired(token));
     }
 
-    private void handleErrorResponse(HttpStatusCodeException exception) {
+    private void handleFailedAuthErrorResponse(HttpStatusCodeException exception) {
         throw new CouldNotAuthenticateUserException("Could not authorize user", mapErrorResponseMessage(exception.getMessage()));
     }
 
